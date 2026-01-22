@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>高压电源与万用表测试系统（Web）</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>高压电源与万用表测试系统（Web）</h1>
+
+    <div class="row">
+      <section class="card">
+        <h2>系统状态</h2>
+        <div class="kv">
+          <div><span class="k">测试</span><span class="v" id="flagTesting">-</span></div>
+          <div><span class="k">稳流</span><span class="v" id="flagStab">-</span></div>
+          <div><span class="k">记录</span><span class="v" id="flagRecording">-</span></div>
+        </div>
+        <div class="actions">
+          <button id="btnRefreshPorts">刷新端口</button>
+          <button id="btnClearChart">清空图表</button>
+        </div>
+        <div class="hint" id="connHint"></div>
+      </section>
+
+      <section class="card">
+        <h2>高压电源控制（HAPS06）</h2>
+        <div class="grid">
+          <label>串口</label>
+          <select id="hvPort"></select>
+
+          <label>状态</label>
+          <div id="hvState">-</div>
+
+          <label>实际电压</label>
+          <div id="hvVout">-</div>
+        </div>
+        <div class="actions">
+          <button id="btnHvConnect">连接/断开</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Keithley 248（稳流控制）</h2>
+        <div class="grid">
+          <label>GPIB 地址</label>
+          <select id="keithleyPort"></select>
+
+          <label>状态</label>
+          <div id="keithleyState">-</div>
+
+          <label>输出电压</label>
+          <div id="keithleyV">-</div>
+        </div>
+        <div class="actions">
+          <button id="btnKeithleyConnect">连接/断开</button>
+          <button id="btnStabStart">开始稳流</button>
+          <button id="btnStabStop">停止稳流</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>万用表（阴极/栅极/阳极/收集极/真空）</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>通道</th>
+              <th>串口</th>
+              <th>系数</th>
+              <th>操作</th>
+              <th>读数</th>
+              <th>单位</th>
+              <th>时间戳</th>
+            </tr>
+          </thead>
+          <tbody id="meterBody"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>测试设置</h2>
+        <div class="grid grid-4">
+          <label>起始电压(V)</label><input id="testStartV" type="number" step="0.1"/>
+          <label>目标电压(V)</label><input id="testTargetV" type="number" step="0.1"/>
+          <label>步进电压(V)</label><input id="testStepV" type="number" step="0.1"/>
+          <label>步进延时(s)</label><input id="testStepDelay" type="number" step="0.1"/>
+          <label>循环时间(s)</label><input id="testCycleTime" type="number" step="0.1"/>
+        </div>
+        <div class="actions">
+          <button id="btnSaveTestParams">保存设置</button>
+          <button id="btnTestStart">开始测试</button>
+          <button id="btnTestStartCycle">循环测试</button>
+          <button id="btnTestStop">停止测试</button>
+          <button id="btnResetVoltage">复位(100V)</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>稳流设置</h2>
+        <div class="grid grid-4">
+          <label>目标电流(uA)</label><input id="stabTargetI" type="number" step="0.1"/>
+          <label>稳定范围(uA)</label><input id="stabRangeI" type="number" step="0.1"/>
+          <label>起始电压(V)</label><input id="stabStartV" type="number" step="0.1"/>
+
+          <label>电流来源</label>
+          <select id="stabSource">
+            <option value="keithley">Keithley自身</option>
+            <option value="cathode">阴极</option>
+            <option value="gate">栅极</option>
+            <option value="anode">阳极</option>
+            <option value="backup">收集极</option>
+          </select>
+
+          <label>稳流算法</label>
+          <select id="stabAlgo">
+            <option value="pid">PID</option>
+            <option value="approach">接近算法(1V步进)</option>
+          </select>
+
+          <label>调整频率(s)</label><input id="stabFreq" type="number" step="0.1"/>
+          <label>最大调整电压(V)</label><input id="stabMaxAdjV" type="number" step="0.1"/>
+        </div>
+        <div class="actions">
+          <button id="btnSaveStabParams">保存稳流设置</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>数据记录</h2>
+        <div class="grid">
+          <label>保存路径（服务器本机路径）</label>
+          <input id="recordPath" placeholder="例如：D:\data\hv_test"/>
+          <label>文件</label>
+          <div id="fileList">-</div>
+        </div>
+        <div class="actions">
+          <button id="btnSetRecordPath">设置路径</button>
+          <button id="btnToggleRecording">开始/停止记录</button>
+          <button id="btnRefreshFiles">刷新文件列表</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>实时曲线</h2>
+        <div class="plot-controls">
+          <button id="btnPlotPause">暂停</button>
+          <button id="btnPlotClear">清空</button>
+          <label class="chk"><input type="checkbox" id="chkVacuumLog" checked>真空对数</label>
+        </div>
+        <div class="plots">
+          <div class="plot">
+            <div class="plot-title">电流（cathode/gate/anode/backup）</div>
+            <div class="legend" id="legendCurrent"></div>
+            <canvas id="plotCurrent" width="1100" height="260"></canvas>
+          </div>
+          <div class="plot">
+            <div class="plot-title">电压（HAPS06 Vout / Keithley V）与真空</div>
+            <div class="legend" id="legendVoltage"></div>
+            <canvas id="plotVoltage" width="1100" height="260"></canvas>
+          </div>
+        </div>
+        <div class="hint">说明：图像为简化绘制（浏览器端实时折线）。InfluxDB 已用于后端时序存储与诊断。</div>
+      </section>
+    </div>
+
+    <div class="row">
+      <section class="card wide">
+        <h2>SQLite 数据库维护（防丢失 + 控制磁盘占用）</h2>
+        <div class="grid grid-4">
+          <label>数据库状态</label><div id="dbStatus">-</div>
+          <label>保留天数</label><input id="dbKeepDays" type="number" min="1" step="1"/>
+          <label>保留 runs</label><input id="dbKeepRuns" type="number" min="1" step="1"/>
+          <label>清理前归档(CSV)</label>
+          <select id="dbArchive">
+            <option value="1" selected>是</option>
+            <option value="0">否</option>
+          </select>
+          <label>Vacuum</label>
+          <select id="dbVacuum">
+            <option value="incremental" selected>增量</option>
+            <option value="vacuum">全量</option>
+          </select>
+          <label>归档目录</label><input id="dbArchiveDir" placeholder="例如：data\\archive"/>
+        </div>
+        <div class="actions">
+          <button id="btnDbRefresh">刷新状态</button>
+          <button id="btnDbCleanup">一键清理数据库</button>
+        </div>
+        <div class="hint">提示：清理时会删除旧 runs，并可先导出为 CSV 归档。清理期间请停止“数据记录”。</div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div>Web 服务端口默认：8000。请确保 Windows 防火墙放行 TCP 8000（专用网络）。</div>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

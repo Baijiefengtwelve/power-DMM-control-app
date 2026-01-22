@@ -1,0 +1,8 @@
+pyserial
+PyQt5
+pyqtgraph
+numpy
+pyvisa
+fastapi
+uvicorn[standard]
+requests
