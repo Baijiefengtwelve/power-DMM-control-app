@@ -1,0 +1,62 @@
+
+:root{--bg:#0b0f14;--card:#121824;--text:#e7eef8;--muted:#8aa0b6;--line:#233044;--accent:#4aa3ff;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+.container{max-width:1220px;margin:0 auto;padding:18px}
+h1{font-size:22px;margin:6px 0 14px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;flex:1;min-width:320px}
+.card.wide{flex: 1 1 100%}
+h2{font-size:16px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:140px 1fr;gap:8px 10px;align-items:center}
+.grid-4{grid-template-columns:140px 1fr 140px 1fr}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+button{background:#1b2636;border:1px solid var(--line);color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
+button:hover{border-color:#355071}
+input,select{background:#0d1420;border:1px solid var(--line);color:var(--text);padding:7px 8px;border-radius:8px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid var(--line);padding:8px 6px;font-size:13px}
+.table th{color:var(--muted);text-align:left}
+.kv{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.kv .k{display:block;color:var(--muted);font-size:12px}
+.kv .v{display:block;font-size:14px;margin-top:2px}
+.hint{margin-top:10px;color:var(--muted);font-size:12px}
+.plots{display:flex;flex-direction:column;gap:10px}
+.plot{border:1px dashed #2a3b52;border-radius:10px;padding:10px}
+.plot-title{color:var(--muted);font-size:12px;margin-bottom:6px}
+
+/* Legend (series toggles) */
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin:4px 0 8px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);user-select:none}
+.legend-swatch{width:10px;height:10px;border-radius:2px;display:inline-block;border:1px solid #2a3b52}
+.footer{color:var(--muted);font-size:12px;margin-top:10px}
+a{color:var(--accent);text-decoration:none}
+
+
+/* Button states */
+.btn-connected{border-color:#3a6ea5;background:#16304a}
+.btn-disconnected{border-color:var(--line);background:#1b2636}
+.btn-running{border-color:#a56e3a;background:#3a2a16}
+.btn-disabled{opacity:.55;cursor:not-allowed}
+select:disabled,input:disabled{opacity:.6}
+.hint-ok{color:#8ad48a}
+.hint-err{color:#ff8a8a}
+
+
+.plot-controls{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  margin:10px 0 14px;
+}
+.plot-controls .chk{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  color:#c7d2e0;
+  user-select:none;
+}
+.plot-controls button{
+  padding:8px 12px;
+  border-radius:10px;
+}
